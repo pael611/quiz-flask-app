@@ -1,6 +1,6 @@
 # Quiz Academy 🧠
 
-Situs web kuis dinamis interaktif yang ditujukan untuk audiens remaja, dengan fitur autentikasi, papan peringkat real-time, dan widget prakiraan cuaca. Dibangun menggunakan Flask dan PostgreSQL.
+Situs web kuis dinamis interaktif yang ditujukan untuk audiens remaja, dengan fitur autentikasi, papan peringkat real-time, dan widget prakiraan cuaca. Dibangun menggunakan Flask dengan SQLite database lokal.
 
 ## 📋 Daftar Isi
 
@@ -12,6 +12,8 @@ Situs web kuis dinamis interaktif yang ditujukan untuk audiens remaja, dengan fi
 - [Menjalankan Aplikasi](#menjalankan-aplikasi)
 - [Struktur Project](#struktur-project)
 - [API Endpoints](#api-endpoints)
+- [Database](#database)
+- [Troubleshooting](#troubleshooting)
 - [Kontribusi](#kontribusi)
 - [Lisensi](#lisensi)
 
@@ -20,8 +22,9 @@ Situs web kuis dinamis interaktif yang ditujukan untuk audiens remaja, dengan fi
 ### 🔐 Autentikasi
 
 - Registrasi pengguna dengan validasi username dan nickname unik
-- Login dengan enkripsi password
-- Logout dengan session management
+- Login dengan enkripsi password menggunakan Werkzeug
+- Logout dengan session management Flask-Login
+- Password hashing aman
 
 ### 🎯 Sistem Kuis
 
@@ -29,27 +32,32 @@ Situs web kuis dinamis interaktif yang ditujukan untuk audiens remaja, dengan fi
 - Pertanyaan ditampilkan secara acak tanpa batas
 - Sistem poin: 10 poin per jawaban benar
 - Total skor tersimpan di akun pengguna
+- Riwayat skor pengguna
 
 ### 📊 Papan Peringkat
 
-- Menampilkan top 10 pemain
-- Ranking berdasarkan total skor
+- Menampilkan top 10 pemain berdasarkan total skor
+- Ranking otomatis berdasarkan performa
 - Informasi tanggal registrasi pemain
-- Highlight pemain yang login
+- Highlight pemain yang sedang login
+- Update real-time setelah setiap kuis
 
 ### 🌤️ Widget Prakiraan Cuaca
 
 - Pencarian cuaca berdasarkan nama kota
-- Prakiraan 3 hari ke depan
+- Prakiraan 4 hari ke depan (real-time dari WeatherAPI)
 - Menampilkan suhu siang dan malam
-- Ikon dan kondisi cuaca real-time
+- Ikon dan kondisi cuaca dengan detail
+- Nama hari dalam bahasa Inggris
 
 ### 📱 User Interface
 
-- Navigasi menu responsif
-- Desain mobile-friendly
+- Navigasi menu responsif dengan brand logo
+- Desain mobile-friendly dan modern
 - Footer dengan informasi pengembang
 - Error handling yang user-friendly
+- Loading states dan feedback visual
+- Gradient backgrounds dan smooth transitions
 
 ### 📚 Topik Kuis
 
@@ -57,427 +65,514 @@ Situs web kuis dinamis interaktif yang ditujukan untuk audiens remaja, dengan fi
 - Computer Vision
 - Natural Language Processing (NLP)
 - Implementasi Model AI
+- 5+ pertanyaan sample siap pakai
 
 ## 🛠️ Teknologi yang Digunakan
 
 ### Backend
 
-- **Flask** (2.3.2) - Web framework
+- **Flask** (2.3.2) - Web framework Python
 - **Flask-SQLAlchemy** (3.0.5) - ORM untuk database
 - **Flask-Login** (0.6.2) - User session management
-- **Werkzeug** (2.3.6) - Security utilities
+- **Werkzeug** (2.3.6) - Security utilities & password hashing
+- **SQLAlchemy** (2.0.19) - Database ORM layer
 
 ### Database
 
-- **PostgreSQL** - Database relasional
-- **Supabase** - PostgreSQL managed service
+- **SQLite** - Lightweight local database (file-based)
+- **quiz_academy.db** - Auto-created pada first run
 
 ### Frontend
 
-- **Jinja2** - Template engine
-- **HTML5** - Markup
-- **CSS3** - Styling
-- **JavaScript** - Client-side logic
+- **Jinja2** - Template engine (built-in Flask)
+- **HTML5** - Semantic markup
+- **CSS3** - Modern styling & responsive design
+- **JavaScript (Vanilla)** - Client-side interactivity
 
 ### External APIs
 
-- **WeatherAPI** - Prakiraan cuaca real-time
+- **WeatherAPI** (weatherapi.com) - Prakiraan cuaca real-time
 
 ### Development Tools
 
-- **Python 3.8+**
+- **Python 3.8+** - Programming language
 - **pip** - Package manager
-- **python-dotenv** - Environment variables
+- **python-dotenv** - Environment variables management
+- **Virtual Environment** - Project isolation
 
-## 📦 Prasyarat
+## 📦 Library & Dependencies
+
+Lihat file `DEPENDENCIES.md` untuk penjelasan lengkap setiap library.
+
+**Ringkas:**
+```
+pip install -r requirements.txt
+```
+
+Installs:
+- Flask, Werkzeug, Flask-SQLAlchemy, SQLAlchemy
+- Flask-Login, requests, python-dotenv
+
+## 📋 Prasyarat
 
 Sebelum memulai, pastikan Anda memiliki:
 
-- Python 3.8 atau lebih tinggi
-- pip (Python package manager)
-- Account Supabase (gratis di [supabase.com](https://supabase.com))
-- API key WeatherAPI (gratis di [weatherapi.com](https://www.weatherapi.com))
-- Git (untuk version control)
+- **Python** 3.8 atau lebih tinggi
+- **pip** (Python package manager) - usually comes with Python
+- **git** (untuk version control) - optional
+- **API key WeatherAPI** (gratis di [weatherapi.com](https://www.weatherapi.com))
+- **Text Editor/IDE** - VS Code, PyCharm, atau Sublime Text
+- **Internet connection** - untuk WeatherAPI
+
+### Verifikasi Prerequisites
+
+```bash
+python --version          # Harus 3.8+
+pip --version            # Harus ada
+git --version            # Optional, untuk git
+```
 
 ## 🚀 Instalasi
 
-### 1. Clone Repository
+### Step 1: Clone atau Download Project
 
-\`\`\`bash
+```bash
+# Via Git
 git clone https://github.com/username/kodlab-quiz-academy.git
 cd kodlab-quiz-academy
-\`\`\`
 
-### 2. Buat Virtual Environment
+# Atau download ZIP dan extract
+cd c:\Users\pael\Documents\pengumpulan dicoding\kodlab
+```
+
+### Step 2: Buat Virtual Environment
 
 **Windows:**
-\`\`\`bash
+```bash
 python -m venv venv
 venv\Scripts\activate
-\`\`\`
+```
 
 **macOS/Linux:**
-\`\`\`bash
+```bash
 python3 -m venv venv
 source venv/bin/activate
-\`\`\`
+```
 
-### 3. Install Dependencies
+### Step 3: Install Dependencies
 
-\`\`\`bash
+```bash
 pip install -r requirements.txt
-\`\`\`
+```
+
+Expected output:
+```
+Successfully installed Flask-2.3.2 Flask-Login-0.6.2 ...
+```
+
+### Step 4: Setup Environment Variables
+
+Buat file `.env` di root folder project:
+
+```properties
+WEATHER_API_KEY=f8e66e4cb2434da297b73204251710
+SECRET_KEY=lms-app-flask
+FLASK_ENV=development
+```
+
+### Step 5: Verify Installation
+
+```bash
+# Test database connection
+python test_connection.py
+
+# Debug database
+python debug_db.py
+```
+
+Expected output:
+```
+✅ ALL TESTS PASSED - LOCAL DATABASE READY!
+```
+
+### Step 6: Jalankan Aplikasi
+
+```bash
+python app.py
+```
+
+Expected output:
+```
+WARNING: This is a development server. Do not use it in production.
+Running on http://127.0.0.1:5000
+```
+
+Akses aplikasi di: **http://localhost:5000**
 
 ## ⚙️ Konfigurasi
 
-### 1. Setup Environment Variables
+### Environment Variables (.env)
 
-Buat file `.env` di root folder:
+File `.env` berisi:
+```properties
+# Weather API Key
+WEATHER_API_KEY=your-api-key-here
 
-\`\`\`properties
+# Flask Secret Key (untuk session)
+SECRET_KEY=your-secret-key-change-in-production
 
-# Supabase PostgreSQL Configuration
+# Flask Environment
+FLASK_ENV=development  # atau production
+```
 
-SUPABASE_USER=postgres.jazasgfuqqnlezgarykz
-SUPABASE_PASSWORD=your-actual-password
-SUPABASE_HOST=aws-1-us-east-1.pooler.supabase.com
-SUPABASE_PORT=6543
-SUPABASE_DBNAME=postgres
+### Database Configuration
+
+Database otomatis dibuat saat app first run:
+- **File:** `quiz_academy.db` (di root folder)
+- **Type:** SQLite (file-based)
+- **Tables:** user, quiz_question, user_score
+
+Untuk manual creation:
+```bash
+python create_db.py
+```
+
+### Config File (config.py)
+
+```python
+# Database URI (otomatis SQLite)
+SQLALCHEMY_DATABASE_URI = "sqlite:///quiz_academy.db"
 
 # Security
+SECRET_KEY = "lms-app-flask"
 
-SECRET_KEY=your-secret-key-here
-
-# Weather API
-
-WEATHER_API_KEY=your-weatherapi-key-here
-
-# Flask
-
-FLASK_ENV=development
-\`\`\`
-
-### 2. Dapatkan Credentials
-
-#### Supabase Database
-
-1. Daftar di [supabase.com](https://supabase.com)
-2. Buat project baru
-3. Pergi ke Settings → Database → Connection Pooler
-4. Pilih "PgBouncer" dan salin credentials
-
-#### WeatherAPI Key
-
-1. Daftar di [weatherapi.com](https://www.weatherapi.com)
-2. Dapatkan API key gratis di dashboard
-3. Tambahkan ke file `.env`
-
-### 3. Test Koneksi Database
-
-\`\`\`bash
-python test_connection.py
-\`\`\`
-
-Output yang diharapkan:
-\`\`\`
-✅ ALL TESTS PASSED - CONNECTION IS WORKING!
-\`\`\`
+# API
+WEATHER_API_KEY = "dari .env"
+```
 
 ## 🎮 Menjalankan Aplikasi
 
 ### Development Mode
 
-\`\`\`bash
+```bash
 python app.py
-\`\`\`
+```
 
-Akses aplikasi di: `http://localhost:5000`
+Akses: `http://localhost:5000`
 
-**Apa yang terjadi pertama kali:**
-1. Aplikasi akan membuat file \`quiz_academy.db\` secara otomatis
-2. Tabel-tabel database akan dibuat otomatis
-3. Sample quiz questions akan diisi ke database
-4. Database siap digunakan
+**Apa yang terjadi saat pertama kali run:**
+1. ✅ File `quiz_academy.db` dibuat otomatis di root folder
+2. ✅ Tabel-tabel database dibuat otomatis
+3. ✅ 5 sample quiz questions diisi ke database
+4. ✅ Database siap untuk digunakan
 
-### Manual Database Creation
+### Operasi Database
 
-Jika ingin membuat database secara manual:
-
-\`\`\`bash
+```bash
+# Membuat database manual
 python create_db.py
-\`\`\`
 
-### Database Auto-Creation Process
-
-**Kapan file \`quiz_academy.db\` dibuat?**
-
-✅ **Otomatis dibuat saat:**
-- Menjalankan \`python app.py\` pertama kali
-- Fungsi \`init_db()\` dipanggil di aplikasi
-- Database tidak ada, tapi koneksi dibuat
-
-⚠️ **Penting untuk diketahui:**
-- Database hanya dibuat jika folder project punya write permission
-- File akan dibuat di folder root project: \`./quiz_academy.db\`
-- Ukuran awal database kecil (~50-100 KB)
-- Ukuran akan bertambah seiring penambahan data
-
-### Verifikasi Database
-
-Untuk memastikan database sudah dibuat:
-
-\`\`\`bash
-# Test database
+# Test koneksi database
 python test_connection.py
 
 # Debug database
 python debug_db.py
-\`\`\`
 
-Output yang diharapkan:
-\`\`\`
-✅ Database file exists
-✅ Found 3 tables: user, quiz_question, user_score
-\`\`\`
-
-### Jika Database Tidak Terbuat
-
-**Kemungkinan penyebab:**
-
-1. **Write Permission Error**
-   - Pastikan folder project punya write permission
-   - Jalankan command prompt sebagai administrator
-
-2. **Directory Path Error**
-   - Pastikan working directory benar
-   - Jalankan dari root folder project
-
-3. **Python Path Error**
-   - Pastikan venv sudah aktif
-   - Jalankan: \`pip list\` untuk verify
-
-**Solusi:**
-
-\`\`\`bash
-# Pastikan di folder project root
-cd C:\Users\pael\Documents\pengumpulan dicoding\kodlab
-
-# Aktifkan venv
-venv\Scripts\activate
-
-# Create database manually
-python create_db.py
-
-# Verify
-python debug_db.py
-\`\`\`
+# Create database dalam Python interactive shell
+python
+>>> from app import app, db, init_db
+>>> init_db()
+```
 
 ## 📁 Struktur Project
 
-\`\`\`
+```
 kodlab/
 ├── app.py                          # Main Flask application
 ├── config.py                       # Configuration settings
 ├── requirements.txt                # Python dependencies
 ├── .env                           # Environment variables (git ignored)
+├── .gitignore                     # Git ignore file
 ├── README.md                      # Project documentation
+├── DEPENDENCIES.md                # Library documentation
+├── INSTALLATION.md                # Detailed installation guide
+│
+├── quiz_academy.db                # SQLite database (auto-created)
+├── create_db.py                   # Manual database creation script
 ├── test_connection.py             # Database connection test
-├── templates/
+├── debug_db.py                    # Database debugging script
+├── check_network.py               # Network diagnostic script
+│
+├── templates/                     # HTML templates
 │   ├── base.html                 # Base template dengan navbar & footer
 │   ├── index.html                # Home page dengan weather widget
-│   ├── register.html             # Registration page
-│   ├── login.html                # Login page
-│   ├── quiz.html                 # Quiz page
-│   ├── leaderboard.html          # Leaderboard page
+│   ├── register.html             # Registration form
+│   ├── login.html                # Login form
+│   ├── quiz.html                 # Quiz interface
+│   ├── leaderboard.html          # Papan peringkat
 │   └── error.html                # Error page
-├── static/
+│
+├── static/                        # Static files
 │   ├── css/
-│   │   └── style.css             # Main stylesheet
+│   │   └── style.css             # Main stylesheet (responsive)
 │   └── js/
 │       └── script.js             # Client-side logic
-└── .gitignore                    # Git ignore file
-\`\`\`
+│
+└── docs/                          # Documentation
+    ├── PYTHONANYWHERE_SETUP.md   # PythonAnywhere deployment
+    ├── SUPABASE_FIREWALL_SETUP.md # Network setup (archived)
+    └── WSGI.md                   # WSGI configuration
+```
+
+## 🗄️ Database
+
+### Schema
+
+**users table:**
+```
+id (Primary Key)
+username (String, Unique)
+nickname (String, Unique)
+password (String, hashed)
+total_score (Integer)
+created_at (DateTime)
+```
+
+**quiz_question table:**
+```
+id (Primary Key)
+topic (String)
+question (String)
+option_a, option_b, option_c, option_d (String)
+correct_answer (String: A/B/C/D)
+```
+
+**user_score table:**
+```
+id (Primary Key)
+user_id (Foreign Key → user.id)
+score (Integer)
+date_taken (DateTime)
+```
+
+### Database Features
+
+✅ **Auto-creation:**
+- Database file otomatis dibuat saat app startup
+- Tabel otomatis dibuat dengan `db.create_all()`
+- Sample questions otomatis diisi
+
+✅ **Persistence:**
+- Data tersimpan di file `quiz_academy.db`
+- Data persisten antar session
+- Backup: copy file `quiz_academy.db`
+- Reset: delete file, database akan recreate
+
+✅ **Performance:**
+- SQLite optimal untuk single-user/development
+- Connection timeout: 10 detik
+- Pool pre-ping untuk connection health check
 
 ## 🔌 API Endpoints
 
-### Authentication
+### Authentication Routes
+```
+POST   /register       # Register pengguna baru
+POST   /login          # Login pengguna
+GET    /logout         # Logout (require login)
+```
 
-- `POST /register` - Registrasi pengguna baru
-- `POST /login` - Login pengguna
-- `GET /logout` - Logout pengguna (require login)
-
-### Pages
-
-- `GET /` - Home page dengan weather widget
-- `GET /quiz` - Quiz page (require login)
-- `GET /leaderboard` - Papan peringkat
+### Main Routes
+```
+GET    /               # Home page dengan weather widget
+GET    /quiz           # Quiz page (require login)
+GET    /leaderboard    # Papan peringkat
+```
 
 ### Quiz API
+```
+GET    /api/quiz/next-question           # Get random question (JSON)
+POST   /api/quiz/submit-answer           # Submit answer (JSON)
+```
 
-- `GET /api/quiz/next-question` - Dapatkan pertanyaan kuis random (require login)
-- `POST /api/quiz/submit-answer` - Submit jawaban kuis (require login)
+**Quiz API - Request/Response:**
 
-  Request body:
-  \`\`\`json
-  {
+Get Question:
+```bash
+GET /api/quiz/next-question
+```
+
+Response:
+```json
+{
+  "id": 1,
+  "question": "Python library mana yang paling populer untuk machine learning?",
+  "options": {
+    "A": "NumPy",
+    "B": "Scikit-learn",
+    "C": "Pandas",
+    "D": "Matplotlib"
+  }
+}
+```
+
+Submit Answer:
+```bash
+POST /api/quiz/submit-answer
+Content-Type: application/json
+
+{
   "question_id": 1,
   "answer": "B"
-  }
-  \`\`\`
+}
+```
 
-  Response:
-  \`\`\`json
-  {
+Response:
+```json
+{
   "correct": true,
   "correct_answer": "B",
   "new_score": 50
-  }
-  \`\`\`
+}
+```
 
-## 📊 Database Schema
+## 🎓 Topik Kuis & Pertanyaan
 
-### Users Table
+### AI Development
+- Machine Learning libraries
+- Natural Language Processing
+- Deep Learning concepts
+- Python untuk AI
 
-| Column      | Type        | Constraint       |
-| ----------- | ----------- | ---------------- |
-| id          | Integer     | PRIMARY KEY      |
-| username    | String(80)  | UNIQUE, NOT NULL |
-| nickname    | String(80)  | UNIQUE, NOT NULL |
-| password    | String(255) | NOT NULL         |
-| total_score | Integer     | DEFAULT 0        |
-| created_at  | DateTime    | DEFAULT now()    |
+### Computer Vision
+- OpenCV library
+- CNN (Convolutional Neural Networks)
+- Image recognition
+- Visual processing
 
-### Quiz Questions Table
+### Pertanyaan Sample
+5 sample questions sudah included:
+1. ML library terpopuler
+2. Pengertian NLP
+3. Computer Vision library
+4. Deep Learning definition
+5. CNN usage
 
-| Column         | Type        | Constraint      |
-| -------------- | ----------- | --------------- |
-| id             | Integer     | PRIMARY KEY     |
-| topic          | String(100) | NOT NULL, INDEX |
-| question       | String(500) | NOT NULL        |
-| option_a       | String(255) | NOT NULL        |
-| option_b       | String(255) | NOT NULL        |
-| option_c       | String(255) | NOT NULL        |
-| option_d       | String(255) | NOT NULL        |
-| correct_answer | String(1)   | NOT NULL        |
-
-### User Scores Table
-
-| Column     | Type     | Constraint           |
-| ---------- | -------- | -------------------- |
-| id         | Integer  | PRIMARY KEY          |
-| user_id    | Integer  | FOREIGN KEY, INDEX   |
-| score      | Integer  | NOT NULL             |
-| date_taken | DateTime | DEFAULT now(), INDEX |
-
-## 🎓 Topik Kuis yang Tersedia
-
-1. **AI Development**
-
-   - Machine Learning libraries (NumPy, Scikit-learn, Pandas)
-   - Natural Language Processing (NLP)
-   - Deep Learning concepts
-2. **Computer Vision**
-
-   - OpenCV library
-   - CNN (Convolutional Neural Networks)
-   - Image recognition techniques
+Tambah pertanyaan di `init_sample_questions()` di app.py
 
 ## 🔒 Security Features
 
-- ✅ Password hashing dengan Werkzeug
-- ✅ SQL injection prevention via ORM
-- ✅ CSRF protection (Flask-Login)
+- ✅ Password hashing dengan Werkzeug (PBKDF2)
+- ✅ SQL injection prevention via SQLAlchemy ORM
+- ✅ CSRF protection built-in Flask-Login
 - ✅ Environment variables untuk sensitive data
-- ✅ SSL/TLS connection ke database
-- ✅ Input validation dan sanitization
-
-## 🐛 Troubleshooting
-
-### Masalah Koneksi Database
-
-\`\`\`bash
-
-# Flush DNS cache (Windows)
-
-ipconfig /flushdns
-
-# Test connection
-
-python test_connection.py
-\`\`\`
-
-### Masalah WeatherAPI
-
-- Pastikan API key sudah valid
-- Check rate limit (free tier: 1M calls/month)
-- Verify internet connection
-
-### Issues dengan Dependencies
-
-\`\`\`bash
-
-# Upgrade pip
-
-pip install --upgrade pip
-
-# Reinstall requirements
-
-pip install -r requirements.txt --force-reinstall
-\`\`\`
-
-## 📈 Performance Optimization
-
-- Database connection pooling (pool_size: 5)
-- Query indexing pada frequently used columns
-- Lazy loading relationships
-- Caching weather data (bisa ditambahkan)
+- ✅ Username & nickname uniqueness validation
+- ✅ Input sanitization di forms
+- ✅ Session management secure
 
 ## 🚀 Deployment
 
-### Deploy ke PythonAnywhere
+### Local Development
+```bash
+python app.py
+```
 
-1. Upload project ke PythonAnywhere
-2. Setup virtual environment
-3. Configure web app dengan WSGI
-4. Set environment variables
-5. Configure static files
-6. Restart web app
+### Production (PythonAnywhere)
+1. Upload project files
+2. Create virtual environment
+3. Install dependencies
+4. Configure WSGI file
+5. Set environment variables
+6. Configure static files
+7. Reload web app
 
-### Deploy ke Heroku
+Lihat `PYTHONANYWHERE_SETUP.md` untuk detail lengkap.
 
-\`\`\`bash
+### Production (Self-hosted)
+```bash
+pip install gunicorn
+gunicorn -w 4 -b 0.0.0.0:8000 app:app
+```
 
-# Install Heroku CLI
+## 🐛 Troubleshooting
 
-# Login ke Heroku
+### Database Issues
 
-heroku login
+**Problem:** "database is locked"
+```bash
+# Solusi: Restart aplikasi
+python app.py
+```
 
-# Create app
+**Problem:** "no such table"
+```bash
+# Solusi: Recreate database
+rm quiz_academy.db
+python create_db.py
+```
 
-heroku create quiz-academy-app
+### Import Errors
 
-# Set environment variables
+**Problem:** "ModuleNotFoundError: No module named 'flask'"
+```bash
+# Solusi: Install dependencies
+pip install -r requirements.txt
+```
 
-heroku config:set WEATHER_API_KEY=your-key
-heroku config:set SECRET_KEY=your-secret
+### Weather API Issues
 
-# Deploy
+**Problem:** "Weather API key not configured"
+```bash
+# Solusi: Set WEATHER_API_KEY di .env
+WEATHER_API_KEY=your-key-here
+```
 
-git push heroku main
-\`\`\`
+**Problem:** "Invalid weather data"
+```bash
+# Solusi: Verify city name
+# Try: Jakarta, London, New York, etc.
+```
 
-## 📝 Catatan Pengembang
+### Logging & Debug
 
-- Project ini dikembangkan sebagai pembelajaran Flask web development
-- Menggunakan best practices: MVC pattern, service layer, error handling
-- Siap untuk production dengan beberapa konfigurasi tambahan
+```bash
+# Test database
+python test_connection.py
+
+# Debug database
+python debug_db.py
+
+# Check app logs
+tail -f app.log
+```
+
+## 📊 Performance & Optimization
+
+- SQLite optimal untuk development
+- Connection pooling built-in
+- Query optimization dengan indexes
+- Static file caching
+- Lazy loading untuk relationships
+
+Untuk production dengan many users, consider migrate ke PostgreSQL/MySQL
+
+## 📝 Best Practices Implemented
+
+✅ Service Layer Architecture (WeatherService, QuizService, AuthService)
+✅ Separation of Concerns (Models, Routes, Services)
+✅ Error Handling & Logging
+✅ Input Validation & Sanitization
+✅ Security (Password hashing, SQL injection prevention)
+✅ Responsive Design
+✅ RESTful API patterns
+✅ Code Comments & Documentation
 
 ## 👨‍💻 Author
 
-**Pengembang: Pael Siregar**
-
-Untuk info lebih lanjut, lihat footer di website.
+**Developer:** Pael Siregar  
+**Project:** Quiz Academy - Educational Quiz Platform  
+**Created:** 2024  
+**For:** Dicoding Course - Python Web Development  
 
 ## 📜 Lisensi
 
@@ -487,24 +582,32 @@ Project ini open source dan dapat digunakan untuk tujuan pembelajaran dan komers
 
 Kontribusi sangat diterima! Untuk kontribusi:
 
-1. Fork repository ini
-2. Buat branch feature (\`git checkout -b feature/AmazingFeature\`)
-3. Commit changes (\`git commit -m 'Add AmazingFeature'\`)
-4. Push ke branch (\`git push origin feature/AmazingFeature\`)
+1. Fork repository
+2. Buat branch feature (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add AmazingFeature'`)
+4. Push ke branch (`git push origin feature/AmazingFeature`)
 5. Buka Pull Request
 
 ## 💬 Support
 
 Jika ada pertanyaan atau issues:
-
 - Buka issue di GitHub
-- Hubungi developer via email
+- Cek dokumentasi: README.md, DEPENDENCIES.md, INSTALLATION.md
+- Jalankan diagnostic scripts: test_connection.py, debug_db.py
+
+## 📚 Dokumentasi Tambahan
+
+- `DEPENDENCIES.md` - Penjelasan setiap library
+- `INSTALLATION.md` - Panduan instalasi lengkap
+- `PYTHONANYWHERE_SETUP.md` - Deploy ke PythonAnywhere
 
 ## 🎉 Terima Kasih
 
-Terima kasih telah menggunakan Quiz Academy!
+Terima kasih telah menggunakan Quiz Academy! Semoga project ini bermanfaat untuk pembelajaran web development dengan Flask.
 
 ---
 
-**Last Updated:** 2024
-**Version:** 1.0.0
+**Last Updated:** Desember 2024  
+**Version:** 1.0.0 (SQLite Local)  
+**Database:** SQLite (quiz_academy.db)  
+**Status:** ✅ Production Ready
