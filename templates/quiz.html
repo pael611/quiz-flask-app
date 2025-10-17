@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Kuis - Quiz Academy{% endblock %}
+
+{% block content %}
+<div class="quiz-container">
+    <div class="quiz-header">
+        <h1>Kuis Interaktif 🎯</h1>
+        <div class="score-display">
+            <p>Skor Anda: <span id="current-score">{{ user_score }}</span></p>
+        </div>
+    </div>
+
+    <div class="quiz-card">
+        <div id="quiz-content">
+            <p class="loading">Memuat pertanyaan...</p>
+        </div>
+    </div>
+
+    <div class="quiz-info">
+        <p>💡 Setiap jawaban benar = 10 poin</p>
+        <p>🔄 Pertanyaan ditampilkan secara acak tanpa batas</p>
+    </div>
+</div>
+
+<script>
+    let currentQuestion = null;
+
+    function loadNextQuestion() {
+        fetch('/api/quiz/next-question')
+            .then(response => response.json())
+            .then(data => {
+                currentQuestion = data;
+                displayQuestion(data);
+            });
+    }
+
+    function displayQuestion(question) {
+        const options = question.options;
+        const optionLabels = ['A', 'B', 'C', 'D'];
+        
+        let html = `
+            <div class="question-box">
+                <h3>${question.question}</h3>
+                <div class="options">
+        `;
+        
+        optionLabels.forEach(label => {
+            html += `
+                <button class="option-btn" onclick="submitAnswer('${label}')">
+                    <span class="option-label">${label}</span>
+                    <span class="option-text">${options[label]}</span>
+                </button>
+            `;
+        });
+        
+        html += `</div></div>`;
+        document.getElementById('quiz-content').innerHTML = html;
+    }
+
+    function submitAnswer(answer) {
+        fetch('/api/quiz/submit-answer', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                question_id: currentQuestion.id,
+                answer: answer
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            showResult(data, answer);
+        });
+    }
+
+    function showResult(data, userAnswer) {
+        const statusClass = data.correct ? 'correct' : 'incorrect';
+        const statusText = data.correct ? '✓ Benar!' : '✗ Salah!';
+        
+        let html = `
+            <div class="result-box ${statusClass}">
+                <h3>${statusText}</h3>
+                <p>Jawaban benar: <strong>${data.correct_answer}</strong></p>
+                <p>Skor Anda sekarang: <strong>${data.new_score}</strong></p>
+                <button class="btn btn-primary" onclick="loadNextQuestion()">Pertanyaan Berikutnya →</button>
+            </div>
+        `;
+        
+        document.getElementById('quiz-content').innerHTML = html;
+        document.getElementById('current-score').textContent = data.new_score;
+    }
+
+    // Load pertanyaan pertama saat halaman dimuat
+    loadNextQuestion();
+</script>
+{% endblock %}

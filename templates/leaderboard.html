@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Papan Peringkat - Quiz Academy{% endblock %}
+
+{% block content %}
+<div class="leaderboard-container">
+    <h1>Papan Peringkat 📊</h1>
+    
+    {% if current_user.is_authenticated %}
+        <div class="user-rank">
+            <p>Anda sedang bermain sebagai: <strong>{{ current_user.nickname }}</strong></p>
+            <p>Total Skor: <strong class="highlight">{{ current_user.total_score }}</strong></p>
+        </div>
+    {% endif %}
+
+    <table class="leaderboard-table">
+        <thead>
+            <tr>
+                <th>Peringkat</th>
+                <th>Nickname</th>
+                <th>Skor Total</th>
+                <th>Terdaftar Sejak</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if players %}
+                {% for player in players %}
+                    <tr class="{% if current_user.is_authenticated and player.id == current_user.id %}highlight-row{% endif %}">
+                        <td class="rank-badge">
+                            {% if loop.index == 1 %}🥇{% elif loop.index == 2 %}🥈{% elif loop.index == 3 %}🥉{% else %}#{{ loop.index }}{% endif %}
+                        </td>
+                        <td>{{ player.nickname }}</td>
+                        <td class="score">{{ player.total_score }}</td>
+                        <td>{{ player.created_at.strftime('%d %b %Y') }}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4" class="empty-message">Belum ada pemain. Mulai bermain sekarang!</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

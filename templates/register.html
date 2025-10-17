@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Pendaftaran - Quiz Academy{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-box">
+        <h2>Pendaftaran 📝</h2>
+        
+        {% if error %}
+            <div class="alert alert-error">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" class="auth-form">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required placeholder="Masukkan username unik">
+            </div>
+
+            <div class="form-group">
+                <label for="nickname">Nickname:</label>
+                <input type="text" id="nickname" name="nickname" required placeholder="Nama panggilan Anda">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required placeholder="Minimal 6 karakter">
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">Konfirmasi Password:</label>
+                <input type="password" id="confirm_password" name="confirm_password" required placeholder="Ulangi password">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Daftar</button>
+        </form>
+
+        <p class="auth-link">Sudah punya akun? <a href="{{ url_for('login') }}">Masuk di sini</a></p>
+    </div>
+</div>
+{% endblock %}

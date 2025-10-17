@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Beranda - Quiz Academy{% endblock %}
+
+{% block content %}
+<div class="home-container">
+    <h1>Selamat datang di Quiz Academy! 🚀</h1>
+    
+    {% if current_user.is_authenticated %}
+        <div class="user-info">
+            <p>Halo, <strong>{{ current_user.nickname }}</strong>! 👋</p>
+            <p>Skor Anda: <span class="score">{{ current_user.total_score }}</span></p>
+        </div>
+        {% else %}
+        <div class="user-info">
+            <p> <strong>Halo, Pengunjung! 👋</strong></p>
+            <p>Silakan <a href="{{ url_for('login') }}">masuk</a> atau <a href="{{ url_for('register') }}">daftar</a> untuk Mengikuti Kuis.</p>
+        </div>
+    {% endif %}
+
+    <!-- WEATHER SECTION -->
+    <div class="weather-section">
+        <h2>Prakiraan Cuaca 🌤️</h2>
+        
+        <form method="GET" class="weather-form">
+            <input type="text" name="city" placeholder="Masukkan nama kota..." value="{{ city }}">
+            <button type="submit">Cari</button>
+        </form>
+
+        {% if error %}
+            <p class="error-message">⚠️ {{ error }}</p>
+        {% elif weather_data %}
+            <div class="weather-grid">
+                {% for forecast in weather_data %}
+                    <div class="weather-card">
+                        <h3>{{ forecast.date }} - {{ forecast.day_name }}</h3>
+                        <div class="weather-icon">
+                            <img src="https:{{ forecast.icon }}" alt="{{ forecast.condition }}">
+                        </div>
+                        <p class="weather-desc">{{ forecast.condition }}</p>
+                        
+                        <p class="temp-day">☀️ Siang: <strong>{{ forecast.day_temp }}°C</strong></p>
+                        <p class="temp-night">🌙 Malam: <strong>{{ forecast.night_temp }}°C</strong></p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% elif city %}
+            <p class="info-message">Masukkan nama kota untuk melihat prakiraan cuaca</p>
+        {% endif %}
+    </div>
+
+    <!-- CTA SECTION -->
+    {% if current_user.is_authenticated %}
+        <div class="cta-section">
+            <a href="{{ url_for('quiz') }}" class="btn btn-primary">Mulai Kuis 🎯</a>
+            <a href="{{ url_for('leaderboard') }}" class="btn btn-secondary">Lihat Papan Peringkat 📊</a>
+        </div>
+    {% else %}
+        <div class="cta-section">
+            <a href="{{ url_for('register') }}" class="btn btn-primary">Daftar Sekarang 📝</a>
+            <a href="{{ url_for('login') }}" class="btn btn-secondary">Masuk 🔑</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+</div>
