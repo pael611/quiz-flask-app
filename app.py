@@ -6,10 +6,24 @@ import requests
 from datetime import datetime
 import random
 import os
+import sys
+import logging
 from dotenv import load_dotenv
 
 load_dotenv()
 from config import Config
+
+# ==================== LOGGING SETUP ====================
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('app.log'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
 # ==================== APP INITIALIZATION ====================
 
@@ -432,13 +446,68 @@ def init_sample_questions():
 
 
 def init_db():
-    """Initialize database"""
+    """
+    Initialize database - Create tables and populate sample data
+    
+    This function will:
+    1. Create all tables if they don't exist
+    2. Populate sample quiz questions
+    3. Handle errors gracefully
+    """
     with app.app_context():
-        db.create_all()
-        init_sample_questions()
+        try:
+            logger.info("=" * 70)
+            logger.info("DATABASE INITIALIZATION STARTED")
+            logger.info("=" * 70)
+            
+            # Get database info
+            db_info = Config.get_db_info()
+            logger.info(f"Database Type: {db_info['type']}")
+            logger.info(f"Database Location: {db_info['location']}")
+            logger.info(f"Database Exists: {db_info['exists']}")
+            
+            # Create all tables
+            logger.info("Creating database tables...")
+            db.create_all()
+            logger.info("✅ Database tables created successfully")
+            
+            # Populate sample data
+            logger.info("Initializing sample quiz questions...")
+            init_sample_questions()
+            logger.info("✅ Sample quiz questions initialized")
+            
+            # Verify tables
+            from sqlalchemy import inspect
+            inspector = inspect(db.engine)
+            tables = inspector.get_table_names()
+            logger.info(f"✅ Database ready with {len(tables)} tables: {', '.join(tables)}")
+            
+            logger.info("=" * 70)
+            logger.info("DATABASE INITIALIZATION COMPLETED SUCCESSFULLY")
+            logger.info("=" * 70)
+            
+        except Exception as e:
+            logger.error("=" * 70)
+            logger.error("DATABASE INITIALIZATION FAILED")
+            logger.error("=" * 70)
+            logger.error(f"Error: {e}", exc_info=True)
+            raise
 
 # ==================== MAIN ====================
 
 if __name__ == '__main__':
-    init_db()
-    app.run(debug=True)
+    try:
+        logger.info("Starting Quiz Academy Application...")
+        init_db()
+    except Exception as e:
+        logger.error(f"Failed to initialize database: {e}", exc_info=True)
+        print(f"\n❌ ERROR: Failed to initialize database")
+        print(f"Details: {e}")
+        sys.exit(1)
+    
+    try:
+        logger.info("Flask app is running...")
+        app.run(debug=True)
+    except Exception as e:
+        logger.error(f"Failed to run Flask app: {e}", exc_info=True)
+        sys.exit(1)

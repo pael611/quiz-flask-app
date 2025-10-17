@@ -4,18 +4,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Config:
-    """Application configuration"""
+    """Application configuration for SQLite local database"""
     
-    # Database
-    SUPABASE_USER = os.environ.get('SUPABASE_USER')
-    SUPABASE_PASSWORD = os.environ.get('SUPABASE_PASSWORD')
-    SUPABASE_HOST = os.environ.get('SUPABASE_HOST')
-    SUPABASE_PORT = os.environ.get('SUPABASE_PORT')
-    SUPABASE_DBNAME = os.environ.get('SUPABASE_DBNAME')
+    # Get base directory
+    BASE_DIR = os.path.abspath(os.path.dirname(__file__))
     
-    SQLALCHEMY_DATABASE_URI = (
-        f"postgresql+psycopg2://{SUPABASE_USER}:{SUPABASE_PASSWORD}@"
-        f"{SUPABASE_HOST}:{SUPABASE_PORT}/{SUPABASE_DBNAME}?sslmode=require"
+    # Database - SQLite Local
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        'DATABASE_URL',
+        f"sqlite:///{os.path.join(BASE_DIR, 'quiz_academy.db')}"
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = False
@@ -26,14 +23,24 @@ class Config:
     # API
     WEATHER_API_KEY = os.environ.get('WEATHER_API_KEY')
     
-    # Database Pool
+    # Database Pool - SQLite specific settings
     SQLALCHEMY_ENGINE_OPTIONS = {
-        'pool_size': 5,
-        'pool_recycle': 3600,
-        'pool_pre_ping': True,
         'connect_args': {
-            'sslmode': 'require',
-            'connect_timeout': 10,
-        }
+            'timeout': 10,
+            'check_same_thread': False,
+        },
+        'pool_pre_ping': True,
+        'echo': False,
     }
+    
+    @classmethod
+    def get_db_info(cls):
+        """Return database configuration info"""
+        db_path = cls.SQLALCHEMY_DATABASE_URI.replace('sqlite:///', '')
+        return {
+            'type': 'SQLite',
+            'location': db_path,
+            'environment': 'Development (Local)',
+            'exists': os.path.exists(db_path),
+        }
 

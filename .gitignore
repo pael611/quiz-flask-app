@@ -8,7 +8,6 @@ venv/
 ENV/
 env/
 .venv
-lms-kodlab/
 
 # Flask
 instance/
@@ -17,11 +16,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Database
+# Database - SQLite local
 *.db
 *.sqlite
 *.sqlite3
-database.db
+quiz_academy.db
 
 # IDE
 .vscode/

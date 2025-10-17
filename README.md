@@ -193,13 +193,84 @@ python app.py
 
 Akses aplikasi di: `http://localhost:5000`
 
-### Production Mode (PythonAnywhere)
+**Apa yang terjadi pertama kali:**
+1. Aplikasi akan membuat file \`quiz_academy.db\` secara otomatis
+2. Tabel-tabel database akan dibuat otomatis
+3. Sample quiz questions akan diisi ke database
+4. Database siap digunakan
 
-1. Upload project ke PythonAnywhere
-2. Setup virtual environment
-3. Configure WSGI file
-4. Set SECRET_KEY yang aman
-5. Update FLASK_ENV ke 'production'
+### Manual Database Creation
+
+Jika ingin membuat database secara manual:
+
+\`\`\`bash
+python create_db.py
+\`\`\`
+
+### Database Auto-Creation Process
+
+**Kapan file \`quiz_academy.db\` dibuat?**
+
+✅ **Otomatis dibuat saat:**
+- Menjalankan \`python app.py\` pertama kali
+- Fungsi \`init_db()\` dipanggil di aplikasi
+- Database tidak ada, tapi koneksi dibuat
+
+⚠️ **Penting untuk diketahui:**
+- Database hanya dibuat jika folder project punya write permission
+- File akan dibuat di folder root project: \`./quiz_academy.db\`
+- Ukuran awal database kecil (~50-100 KB)
+- Ukuran akan bertambah seiring penambahan data
+
+### Verifikasi Database
+
+Untuk memastikan database sudah dibuat:
+
+\`\`\`bash
+# Test database
+python test_connection.py
+
+# Debug database
+python debug_db.py
+\`\`\`
+
+Output yang diharapkan:
+\`\`\`
+✅ Database file exists
+✅ Found 3 tables: user, quiz_question, user_score
+\`\`\`
+
+### Jika Database Tidak Terbuat
+
+**Kemungkinan penyebab:**
+
+1. **Write Permission Error**
+   - Pastikan folder project punya write permission
+   - Jalankan command prompt sebagai administrator
+
+2. **Directory Path Error**
+   - Pastikan working directory benar
+   - Jalankan dari root folder project
+
+3. **Python Path Error**
+   - Pastikan venv sudah aktif
+   - Jalankan: \`pip list\` untuk verify
+
+**Solusi:**
+
+\`\`\`bash
+# Pastikan di folder project root
+cd C:\Users\pael\Documents\pengumpulan dicoding\kodlab
+
+# Aktifkan venv
+venv\Scripts\activate
+
+# Create database manually
+python create_db.py
+
+# Verify
+python debug_db.py
+\`\`\`
 
 ## 📁 Struktur Project
 
